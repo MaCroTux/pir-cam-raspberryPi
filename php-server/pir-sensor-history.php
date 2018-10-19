@@ -1,6 +1,13 @@
 <?php
 
-$file = file('/tmp/cam-pir-history.txt');
+const HISTORY_FILE = '/tmp/cam-pir-history.txt';
+
+if (isset($_GET['rm'])) {
+        unlink(HISTORY_FILE);
+        header("Location: ".$_SERVER['SCRIPT_NAME']);
+}
+
+$file = file(HISTORY_FILE);
 $data = array_reverse($file);
 
 $list = array_map(function ($item) {
