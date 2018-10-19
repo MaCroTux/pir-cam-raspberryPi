@@ -5,6 +5,7 @@ import time
 import datetime
 import picamera
 import requests
+import subprocess
 
 PIR             = 23
 BUZZER          = 22
@@ -12,6 +13,7 @@ IR_LED		= 18
 
 url = 'http://javierferia.com/pir-sensor.php'
 headers = {'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
+uploadVideoCommand = './uploadVideo'
 
 BUZZER_ON	= True
 
@@ -91,7 +93,9 @@ try:
 		
 			if detected:
 				printN("Iniciando grabacion en camara 1")
-				recordCamera('/home/pi/video'+dateRaw()+'.h264', REC_TIME)
+				nameVideo = 'video'+dateRaw()+'.h264'
+				recordCamera('/home/pi/pir-sensor-cam/videos/' + nameVideo, REC_TIME)
+				subprocess.Popen([uploadVideoCommand, nameVideo])
 				printN("Esperando find de movimientos")
 				time.sleep(SLEEP_WAIT)
 				if GPIO.input(PIR):
