@@ -6,16 +6,20 @@ import datetime
 import picamera
 import requests
 import subprocess
+import dotenv
 
-PIR             = 23
-BUZZER          = 22
-IR_LED		= 18
+dotenv.load()
 
-url = 'http://javierferia.com/pir-sensor.php'
-headers = {'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
-uploadVideoCommand = './uploadVideo'
+PIR    = dotenv.get('PIN_PIR_SENSOR')
+BUZZER = dotenv.get('PIN_BUZZER')
+IR_LED = dotenv.get('PIN_IR_LED')
 
-BUZZER_ON	= True
+url = dotenv.get('URL_REGISTER_LOG') #'http://javierferia.com/pir-sensor.php'
+headers = dotenv.get('HEADER_TO_REGISTER_LOG') #{'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
+uploadVideoCommand = dotenv.get('UPLOAD_VIDEO_COMMAND')
+
+BUZZER_ON = dotenv.get('BUZZER_ON')
+REC_TIME  = dotenv.get('REC_TIME')
 
 BUZZER_PITCH    = 2.0
 BUZZER_DURATION = 2.0
@@ -25,12 +29,15 @@ SLEEP_WAIT	= 2
 SLEEP_BUCLE     = 0.1
 SLEEP_STABILIZE = 1
 
-REC_TIME        = 2
+CAM_ISO          = dotenv.get('CAM_ISO')
+CAM_RESOLUTION_W = dotenv.get('CAM_RESOLUTION_W')
+CAM_RESOLUTION_H = dotenv.get('CAM_RESOLUTION_H')
+CAM_QUALITY 	 = dotenv.get('CAM_QUALITY')
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(PIR, GPIO.IN) #PIR
 GPIO.setup(BUZZER, GPIO.OUT) #BUzzer
-GPIO.setup(IR_LED, GPIO.OUT)
+GPIO.setup(IR_LED, GPIO.OUT) #IR LED NIGHT VISION
 
 detected = False
 
@@ -73,9 +80,9 @@ def recordCamera(fileName, time):
 	ir = GPIO.PWM(IR_LED, 100)
 	ir.start(100)
         with picamera.PiCamera() as picam:
-                picam.resolution = (1920, 1080)
-                picam.ISO=800
-                picam.start_recording(fileName, format='h264', quality=30)
+                picam.resolution = (CAM_RESOLUTION_W, CAM_RESOLUTION_H)
+                picam.ISO 	 = CAM_ISO
+                picam.start_recording(fileName, format='h264', quality=CAM_QUALITY)
                 picam.wait_recording(float(time))
                 picam.stop_recording()
 		printN("Fin de grabacion")

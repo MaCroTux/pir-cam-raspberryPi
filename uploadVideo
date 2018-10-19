@@ -1,9 +1,11 @@
 #!/bin/bash
 
+TIMESTAMP=`date +"%s"`
+
 PATH_HOME="${PWD}/videos/"
 URL_UPLOAD="http://javierferia.com/pir-sensor.php"
 URL_DOWNLOAD="videos/"
-PAYLOAD="{\"message\":\"Upload video <a href='${URL_DOWNLOAD}${1}'>${1}</a>\", \"time\":\"\"}"
+PAYLOAD="{\"message\":\"Upload video <a href='${URL_DOWNLOAD}${1}'>${1}</a>\", \"time\":\"${TIMESTAMP}\"}"
 
 scp -P 2200 ${PATH_HOME}${1} root@javierferia.com:/var/www/main/videos
 curl -vX POST ${URL_UPLOAD} -d "${PAYLOAD}" --header "Content-Type: application/json"
