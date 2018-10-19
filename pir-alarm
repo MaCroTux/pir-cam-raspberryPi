@@ -33,6 +33,7 @@ CAM_ISO          = dotenv.get('CAM_ISO')
 CAM_RESOLUTION_W = dotenv.get('CAM_RESOLUTION_W')
 CAM_RESOLUTION_H = dotenv.get('CAM_RESOLUTION_H')
 CAM_QUALITY 	 = dotenv.get('CAM_QUALITY')
+CAM_FORMAT	 = dotenv.get('CAM_FORMAT')
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(PIR, GPIO.IN) #PIR
@@ -82,7 +83,7 @@ def recordCamera(fileName, time):
         with picamera.PiCamera() as picam:
                 picam.resolution = (CAM_RESOLUTION_W, CAM_RESOLUTION_H)
                 picam.ISO 	 = CAM_ISO
-                picam.start_recording(fileName, format='h264', quality=CAM_QUALITY)
+                picam.start_recording(fileName, format=CAM_FORMAT, quality=CAM_QUALITY)
                 picam.wait_recording(float(time))
                 picam.stop_recording()
 		printN("Fin de grabacion")
@@ -99,8 +100,7 @@ try:
 		if not GPIO.input(PIR):
 		
 			if detected:
-				printN("Iniciando grabacion en camara 1")
-				nameVideo = 'video'+dateRaw()+'.h264'
+				nameVideo = 'video'+dateRaw() + '.h264'
 				recordCamera('/home/pi/pir-sensor-cam/videos/' + nameVideo, REC_TIME)
 				subprocess.Popen([uploadVideoCommand, nameVideo])
 				printN("Esperando find de movimientos")
